@@ -1,6 +1,7 @@
 import control as ct
 import numpy as np
 import math
+import matplotlib.pyplot as plt
 
 T = 0.1
 desired_cts_poles = [-3, -3, -100]
@@ -54,3 +55,26 @@ print(f"F_bar: {F_bar}")
 print(f"F: {F}")
 print(f"Eigenvalues of A + BF: {canonical_form_eigvals}")
 print(f"Final eigenvalues: {final_eigvals}")
+
+A_final = A_d + (B_d @ np.reshape(F, (1, 3)))
+sys_final = ct.ss(A_final, B_d, C_d, 0, dt=T)
+
+print("System with controller:", sys_final)
+
+time, response = ct.step_response(sys_final)
+
+# Plot the step response
+plt.figure(figsize=(10, 6))
+plt.plot(time, response)
+plt.title("Step Response")
+plt.xlabel("Time [s]")
+plt.ylabel("Output")
+plt.grid(True)
+plt.show()
+
+info = ct.step_info(sys_final, SettlingTimeThreshold=0.01)
+
+print(f"1% Settling Time: {info['SettlingTime']} seconds")
+print(f"Percent Overshoot: {info['Overshoot']}%")
+print(f"Rise Time: {info['RiseTime']}%")
+print(f"Steady State: {info['SteadyStateValue']}%")
