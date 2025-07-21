@@ -8,7 +8,7 @@ desired_cts_poles = [-3, -3, -100]
 
 A_d = np.array([[1, T, (T**2) / 2], [0, 1, T], [0, 0, 1]])
 B_d = np.array([[(T**3) / 6], [(T**2) / 2], [T]])
-C_d = np.array([0, 0, 1])
+C_d = np.array([1, 0, 0])
 
 sys_d = ct.ss(A_d, B_d, C_d, 0)
 C = ct.ctrb(A_d, B_d)

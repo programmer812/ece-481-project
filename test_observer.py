@@ -10,13 +10,15 @@ T = 0.1
 
 A_d = np.array([[1, T, (T**2) / 2], [0, 1, T], [0, 0, 1]])
 B_d = np.array([[(T**3) / 6], [(T**2) / 2], [T]])
-C_d = np.array([[0, 0, 1]])
+C_d = np.array([[1, 0, 0]])
 
 L = np.array([[0], [0], [-1]])
-F = np.array([[-67.17214498 - 51.83430747 - 12.47951264]])
+F = np.array([[-67.17214498, -51.83430747, -12.47951264]])
 
 A_obs = A_d + (L @ C_d) + (B_d @ F)
+# A_obs = A_d + (B_d @ F)
 B_obs = -L
+# B_obs = -L @ C_d
 C_obs = np.array([0, 0, 1])  # change this to check each state one by one
 
 sys = ct.ss(A_obs, B_obs, C_obs, 0, dt=T)
