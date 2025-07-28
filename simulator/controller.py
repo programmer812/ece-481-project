@@ -16,6 +16,10 @@ class Controller:
         self.u = [0, 0, 0]
 
     def calculate_acceleration(self, y, ref):
+        # does reference generation take place here or in test_sim?
+        # adjust the reference to compensate for the steady state
+        # subtract off the reference in the calculation of u_new
+
         u_new = [F @ x_hat for x_hat in self.state_estimate]
         self.state_estimate = [
             (A_d + (L @ C_d)) @ x_hat + u * B_d - coord * L

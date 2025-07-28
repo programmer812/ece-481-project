@@ -78,3 +78,5 @@ print(f"1% Settling Time: {info['SettlingTime']} seconds")
 print(f"Percent Overshoot: {info['Overshoot']}%")
 print(f"Rise Time: {info['RiseTime']}%")
 print(f"Steady State: {info['SteadyStateValue']}%")
+
+print(f"Steady state gain: {C_d @ np.linalg.inv(np.eye(3) - A_final) @ B_d}")
