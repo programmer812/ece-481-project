@@ -42,9 +42,7 @@ source ece481_ece780t01_project_sim_venv/bin/activate
 python3 -m pip install numpy control matplotlib PyQt5
 ```
 
-3. Open the script `test_sim.py` and uncomment either line 6 or 8 in order to instantiate a simulator with random or specified, respectively, poses of the robot.
-
-4. Run `test_sim.py` to test the simulator:
+3. Run `test_sim.py` to test the simulator:
 ```
 python3 test_sim.py
 ```

@@ -1,10 +1,13 @@
+import time
 import numpy as np
-from flapper_sim import FlapperSim
+from flapper import Flapper
 
-f = FlapperSim(robot_pose=np.array([1.0, 2.0, 0.8, 1.57]))
+f = Flapper(backend_server_ip="192.168.0.2")
 
 while True:
     y = f.get_output_measurement()
+
+    print('[student code, main script] output measurement', y)
     
     estimated_state = np.array([0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
     control_input = np.array([1.0, 2.0, 3.0])
