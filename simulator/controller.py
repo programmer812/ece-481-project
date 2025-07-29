@@ -46,7 +46,9 @@ def generate_trajectory(current, target):
 
 
 class Controller:
+    # def __init__(self, f):
     def __init__(self):
+        # self.flapper = f
         self.state_estimate = [np.array([[0], [0], [0]]) for _ in range(3)]
         self.u = [0, 0, 0]
 
@@ -63,4 +65,11 @@ class Controller:
             ref_coord + F @ x_hat for x_hat, ref_coord in zip(self.state_estimate, ref)
         ]
 
+        # state = np.reshape(self.flapper.x, (3, 3)).T
+        # u = [
+        #     ref_coord + F @ state_component
+        #     for ref_coord, state_component in zip(ref, state)
+        # ]
+
         return np.array(self.state_estimate).reshape((3, 3)).T.flatten(), self.u
+        # return np.array(self.state_estimate).reshape((3, 3)).T.flatten(), u
