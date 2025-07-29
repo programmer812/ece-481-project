@@ -9,6 +9,25 @@ current = np.array([1.0, 2.0, 0.8])
 target = np.array([2, -2, 0.4])
 
 reference = generate_trajectory(current, target)
+print(np.array(reference).shape)
+
+reference_array = np.array(reference)
+
+fig = plt.figure()
+ax = fig.add_subplot(111, projection='3d')
+
+ax.plot(reference_array[:, 0], reference_array[:, 1], reference_array[:, 2], label='Reference Trajectory')
+
+ax.scatter(reference_array[0, 0], reference_array[0, 1], reference_array[0, 2], color='green', label='Start', s=50)
+ax.scatter(reference_array[-1, 0], reference_array[-1, 1], reference_array[-1, 2], color='red', label='Target', s=50)
+
+ax.set_xlabel('X')
+ax.set_ylabel('Y')
+ax.set_zlabel('Z')
+ax.set_title('Generated Reference Trajectory')
+ax.legend()
+plt.tight_layout()
+plt.show()
 
 for component_idx, component in enumerate(["x", "y", "z"]):
     ref = [point[component_idx][0] for point in reference]
