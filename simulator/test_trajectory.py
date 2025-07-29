@@ -9,6 +9,8 @@ current = np.array([1.0, 2.0, 0.8])
 target = np.array([2, -2, 0.4])
 
 reference = generate_trajectory(current, target)
+print(f"Final position: {reference[-1]}")
+print(f"Should be: {target}")
 
 for component_idx, component in enumerate(["x", "y", "z"]):
     ref = [point[component_idx][0] for point in reference]
