@@ -5,7 +5,7 @@ T = 0.1
 
 A_d = np.array([[1, T, (T**2) / 2], [0, 1, T], [0, 0, 1]])
 B_d = np.array([[(T**3) / 6], [(T**2) / 2], [T]])
-C_d = np.array([[0, 0, 1]])
+C_d = np.array([[1, 0, 0]])
 
 L = np.array([[-3], [-25], [-100]])
 F = np.array([[-67.17214498, -51.83430747, -12.47951264]])
@@ -15,6 +15,9 @@ acceleration = 0.01  # m/s
 
 
 def generate_trajectory(current, target):
+    current = np.reshape(current, (3, 1))
+    target = np.reshape(target, (3, 1))
+
     a_with_dir = acceleration * (target - current) / np.linalg.norm(target - current)
     k = int(math.sqrt(np.linalg.norm(target - current) / acceleration) / T)
 
@@ -49,8 +52,9 @@ class Controller:
 
     def calculate_acceleration(self, y, ref):
         y_hats = [C_d @ x_hat for x_hat in self.state_estimate]
+
         self.state_estimate = [
-            A_d @ x_hat + B_d @ u + L @ (y_hat - output_coord)
+            A_d @ x_hat + (u * B_d) + L @ (y_hat - output_coord)
             for x_hat, u, y_hat, output_coord in zip(
                 self.state_estimate, self.u, y_hats, y
             )
@@ -59,4 +63,4 @@ class Controller:
             ref_coord + F @ x_hat for x_hat, ref_coord in zip(self.state_estimate, ref)
         ]
 
-        return self.u
+        return np.array(self.state_estimate).reshape((3, 3)).T.flatten(), self.u
