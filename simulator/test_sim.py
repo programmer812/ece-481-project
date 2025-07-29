@@ -8,8 +8,7 @@ c = Controller()
 y = f.get_output_measurement()
 target = np.array([0.5, 0.5, 0.5])
 
-# an array of x, y, z points
-# plot this to check correct
+# plot to check correct - want piecewise constant acceleration
 reference = generate_trajectory(y, target)
 
 for ref_point in reference:
