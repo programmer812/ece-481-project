@@ -1,12 +1,18 @@
 import numpy as np
 from flapper_sim import FlapperSim
+from controller import Controller, generate_trajectory
 
 f = FlapperSim(robot_pose=np.array([1.0, 2.0, 0.8, 1.57]))
+c = Controller()
 
-while True:
+y = f.get_output_measurement()
+target = np.array([0.5, 0.5, 0.5])
+
+# an array of x, y, z points
+# plot this to check correct
+reference = generate_trajectory(y, target)
+
+for ref_point in reference:
+    u = c.calculate_acceleration(y, ref_point)
+    f.step(u=u)
     y = f.get_output_measurement()
-    
-    estimated_state = np.array([0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
-    control_input = np.array([1.0, 2.0, 3.0])
-
-    f.step(x=estimated_state, u=control_input)
