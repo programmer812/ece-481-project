@@ -11,22 +11,40 @@ target = np.array([2, -2, 0.4])
 reference = generate_trajectory(current, target)
 print(f"Final position: {reference[-1]}")
 print(f"Should be: {target}")
-print(np.array(reference).shape)
 
 reference_array = np.array(reference)
 
 fig = plt.figure()
-ax = fig.add_subplot(111, projection='3d')
+ax = fig.add_subplot(111, projection="3d")
 
-ax.plot(reference_array[:, 0], reference_array[:, 1], reference_array[:, 2], label='Reference Trajectory')
+ax.plot(
+    reference_array[:, 0],
+    reference_array[:, 1],
+    reference_array[:, 2],
+    label="Reference Trajectory",
+)
 
-ax.scatter(reference_array[0, 0], reference_array[0, 1], reference_array[0, 2], color='green', label='Start', s=50)
-ax.scatter(reference_array[-1, 0], reference_array[-1, 1], reference_array[-1, 2], color='red', label='Target', s=50)
+ax.scatter(
+    reference_array[0, 0],
+    reference_array[0, 1],
+    reference_array[0, 2],
+    color="green",
+    label="Start",
+    s=50,
+)
+ax.scatter(
+    reference_array[-1, 0],
+    reference_array[-1, 1],
+    reference_array[-1, 2],
+    color="red",
+    label="Target",
+    s=50,
+)
 
-ax.set_xlabel('X')
-ax.set_ylabel('Y')
-ax.set_zlabel('Z')
-ax.set_title('Generated Reference Trajectory')
+ax.set_xlabel("X")
+ax.set_ylabel("Y")
+ax.set_zlabel("Z")
+ax.set_title("Generated Reference Trajectory")
 ax.legend()
 plt.tight_layout()
 plt.show()
