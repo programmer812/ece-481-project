@@ -13,7 +13,7 @@ F = np.array([[-67.17214498, -51.83430747, -12.47951264]])
 controller_ss_gain = 0.01488712
 trajectory_time = 5
 start_time = 1
-end_time = 5
+end_time = 20
 
 
 def generate_trajectory(current, target):
@@ -61,7 +61,6 @@ def generate_trajectory(current, target):
     )
 
     return pos_trajectory, v_trajectory, a_trajectory
-    # return pos_trajectory_scaled
 
 
 class Controller:
