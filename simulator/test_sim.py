@@ -17,7 +17,7 @@ for position, velocity, acceleration in zip(p_trajectory, v_trajectory, a_trajec
     time_loop_start = time.time()
 
     state_estimate, input = c.calculate_acceleration(
-        y, position, velocity, acceleration, f.x
+        y, position, velocity, acceleration
     )
     f.step(x=state_estimate, u=input)
 

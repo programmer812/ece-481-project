@@ -1,5 +1,5 @@
 import numpy as np
-from controller import generate_trajectory
+from simulator.controller import generate_trajectory
 import matplotlib.pyplot as plt
 from scipy.signal import medfilt
 

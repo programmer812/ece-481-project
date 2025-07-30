@@ -1,5 +1,4 @@
 import numpy as np
-import math
 
 T = 0.1
 
@@ -10,7 +9,6 @@ C_d = np.array([[1, 0, 0]])
 L = np.array([[-1.53803172], [-5.92698271], [-10.92812269]])
 F = np.array([[-67.17214498, -51.83430747, -12.47951264]])
 
-controller_ss_gain = 0.01488712
 trajectory_time = 5
 start_time = 1
 end_time = 20
@@ -68,7 +66,7 @@ class Controller:
         self.state_estimate = [np.array([[0], [0], [0]]) for _ in range(3)]
         self.u = [0, 0, 0]
 
-    def calculate_acceleration(self, y, position, velocity, acceleration, x):
+    def calculate_acceleration(self, y, position, velocity, acceleration):
         y_hats = [C_d @ x_hat for x_hat in self.state_estimate]
 
         self.state_estimate = [
@@ -78,22 +76,11 @@ class Controller:
             )
         ]
 
-        state = np.reshape(x, (3, 3)).T
         desired_state = np.column_stack((position, velocity, acceleration))
-        # error = desired_state - state
-
-        for x_hat, actual_state in zip(self.state_estimate, state):
-            print(x_hat - np.reshape(actual_state, (3, 1)))
 
         self.u = [
             -F @ (np.reshape(target, (3, 1)) - x_hat)
             for x_hat, target in zip(self.state_estimate, desired_state)
         ]
 
-        # self.u = [
-        #     ref_coord + F @ x_hat for x_hat, ref_coord in zip(self.state_estimate, ref)
-        # ]
-        # u = [-F @ error_component for error_component in error]
-
         return np.array(self.state_estimate).reshape((3, 3)).T.flatten(), self.u
-        # return np.array(self.state_estimate).reshape((3, 3)).T.flatten(), u
