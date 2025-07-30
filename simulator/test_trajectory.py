@@ -8,7 +8,9 @@ T = 0.1
 current = np.array([1.0, 2.0, 0.8])
 target = np.array([2, -2, 0.4])
 
-reference = generate_trajectory(current, target)
+reference, v_trajectory, a_trajectory = generate_trajectory(current, target)
+assert len(reference) == len(v_trajectory) == len(a_trajectory)
+
 print(f"Final position: {reference[-1]}")
 print(f"Should be: {target}")
 
@@ -51,6 +53,9 @@ plt.show()
 
 for component_idx, component in enumerate(["x", "y", "z"]):
     ref = [point[component_idx][0] for point in reference]
+    v_traj = [point[component_idx][0] for point in v_trajectory]
+    a_traj = [point[component_idx][0] for point in a_trajectory]
+
     times = [T * i for i in range(len(ref))]
 
     v = [ref[i + 1] - ref[i] for i in range(len(ref) - 1)]
@@ -67,6 +72,14 @@ for component_idx, component in enumerate(["x", "y", "z"]):
     plt.title(f"velocity - {component}")
     plt.show(block=True)
 
+    plt.plot(times, v_traj)
+    plt.title(f"velocity reference - {component}")
+    plt.show(block=True)
+
     plt.plot(times[:-2], a)
     plt.title(f"acceleration - {component}")
+    plt.show(block=True)
+
+    plt.plot(times, a_traj)
+    plt.title(f"acceleration reference - {component}")
     plt.show(block=True)

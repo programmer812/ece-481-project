@@ -6,18 +6,19 @@ import time
 T = 0.1
 
 f = FlapperSim(robot_pose=np.array([1.0, 2.0, 0.8, 1.57]))
-# c = Controller(f)
 c = Controller()
 
 y = f.get_output_measurement()
 target = np.array([2, -2, 0.4])
 
-reference = generate_trajectory(y, target)
+p_trajectory, v_trajectory, a_trajectory = generate_trajectory(y, target)
 
-for ref_point in reference:
+for position, velocity, acceleration in zip(p_trajectory, v_trajectory, a_trajectory):
     time_loop_start = time.time()
 
-    input, state_estimate = c.calculate_acceleration(y, ref_point)
+    state_estimate, input = c.calculate_acceleration(
+        y, position, velocity, acceleration, f.x
+    )
     f.step(x=state_estimate, u=input)
 
     time_loop_end = time.time()
