@@ -6,6 +6,7 @@ import time
 T = 0.1
 
 f = FlapperSim(robot_pose=np.array([1.0, 2.0, 0.8, 1.57]))
+# c = Controller(f)
 c = Controller()
 
 y = f.get_output_measurement()
