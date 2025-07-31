@@ -19,59 +19,43 @@ A_d = np.array([[1, T, (T**2) / 2], [0, 1, T], [0, 0, 1]])
 B_d = np.array([[T**3 / 6], [T**2 / 2], [T]])
 C_d = np.array([[1, 0, 0]])
 
-u = np.ones_like(TIME_STEPS_VEC)
-
-x = np.array([[0.0], [0.0], [0.0]])
-y = C_d @ x
-x_hat = -1.0 + 2.0 * np.random.rand(3, 1)
-
-x_plot = []
-x_hat_plot = []
-
-for t in TIME_STEPS_VEC:
-    x_hat = (A_d + L @ C_d) @ x_hat + B_d @ u[int(t) : int(t + 1)] - L @ y
-
-    x = A_d @ x + B_d @ u[int(t) : int(t + 1)]
-    y = C_d @ x
-
-    x_plot.append(x)
-    x_hat_plot.append(x_hat)
-
 eigvals = np.linalg.eigvals(A_d + L @ C_d)
 print(f"Eigenvalues of A + LC: {eigvals}")
 print(f"Eigenvalues are close: {np.isclose(desired_poles, eigvals, atol=0.0)}")
 
-error = [x_hat_plot[i] - x_plot[i] for i in range(len(TIME_STEPS_VEC))]
+x = np.array([[0.0], [0.0], [0.0]])
+y = C_d @ x
+x_hat = np.array([[-1.0], [-1.0], [-1.0]])
 
-plt.figure()
-plt.plot(TIME_STEPS_VEC, [x[0][0] for x in x_plot], marker="o", ms=0.5, label="x1_x")
-plt.plot(
-    TIME_STEPS_VEC, [x[0][0] for x in x_hat_plot], marker="x", ms=0.5, label="x_hat1_x"
-)
-plt.grid()
-plt.legend()
-plt.xlabel("Time (s)")
-plt.ylabel("State")
-plt.show()
+xvals = []
+estimated_xvals = []
 
-plt.figure()
-plt.plot(TIME_STEPS_VEC, [x[1][0] for x in x_plot], marker="o", ms=0.5, label="x2_x")
-plt.plot(
-    TIME_STEPS_VEC, [x[1][0] for x in x_hat_plot], marker="x", ms=0.5, label="x_hat2_x"
-)
-plt.grid()
-plt.legend()
-plt.xlabel("Time (s)")
-plt.ylabel("State")
-plt.show()
+for t in TIME_STEPS_VEC:
+    x_hat = (A_d + L @ C_d) @ x_hat - L @ y
 
-plt.figure()
-plt.plot(TIME_STEPS_VEC, [x[2][0] for x in x_plot], marker="o", ms=0.5, label="x3_x")
-plt.plot(
-    TIME_STEPS_VEC, [x[2][0] for x in x_hat_plot], marker="x", ms=0.5, label="x_hat3_x"
-)
-plt.grid()
-plt.legend()
-plt.xlabel("Time (s)")
-plt.ylabel("State")
-plt.show()
+    x = A_d @ x
+    y = C_d @ x
+
+    xvals.append(x)
+    estimated_xvals.append(x_hat)
+
+error = [estimated_xvals[i] - xvals[i] for i in range(len(TIME_STEPS_VEC))]
+
+for idx, component in enumerate(["x", "y", "z"]):
+    plt.figure()
+    plt.plot(
+        TIME_STEPS_VEC,
+        [x[idx][0] for x in xvals],
+        label="state",
+    )
+    plt.plot(
+        TIME_STEPS_VEC,
+        [x[idx][0] for x in estimated_xvals],
+        label="estimated state",
+    )
+    plt.grid()
+    plt.legend()
+    plt.xlabel("Time (s)")
+    plt.ylabel("State")
+    plt.title(component)
+    plt.show()
