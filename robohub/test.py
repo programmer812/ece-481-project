@@ -1,15 +1,27 @@
-import time
 import numpy as np
 from flapper import Flapper
+from controller import Controller, generate_trajectory
+import time
 
-f = Flapper(backend_server_ip="192.168.0.2")
+T = 0.1
 
-while True:
+f = Flapper(backend_server_ip='192.168.0.102')
+c = Controller()
+
+y = f.get_output_measurement()
+target = np.array([0, 0, 0.5])
+
+p_trajectory, v_trajectory, a_trajectory = generate_trajectory(y, target)
+
+for position, velocity, acceleration in zip(p_trajectory, v_trajectory, a_trajectory):
+    time_loop_start = time.time()
+
+    state_estimate, input = c.calculate_acceleration(
+        y, position, velocity, acceleration, f.x
+    )
+    f.step(x=state_estimate, u=np.array(input))
+
+    time_loop_end = time.time()
+    time.sleep(max(0, T - (time_loop_end - time_loop_start)))
+
     y = f.get_output_measurement()
-
-    print('[student code, main script] output measurement', y)
-    
-    estimated_state = np.array([0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
-    control_input = np.array([1.0, 2.0, 3.0])
-
-    f.step(x=estimated_state, u=control_input)
