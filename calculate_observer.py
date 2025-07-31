@@ -53,7 +53,7 @@ for i in range(3):
     if len(peaks) > 0:
         peak_values = error_i[peaks]
         max_peak_relative_index = np.argmax(peak_values) # index in the peak_values array
-        max_peak_index = peaks[max_peak_relative_index] # index in the error_ij array
+        max_peak_index = peaks[max_peak_relative_index] # index in the error_i array
 
         max_peak = estimated_xvals[max_peak_index][i]
 
@@ -61,32 +61,35 @@ for i in range(3):
     else:
         overshoot_percent = 0.0
 
-    # # Rise time
-    # initial_error = error0[0]
-    # rise_start_threshold = 0.9 * initial_error
-    # rise_end_threshold = 0.1 * initial_error
-    # rise_time = None
-    # for i, e in enumerate(error0):
-    #     if abs(e) < abs(rise_start_threshold) and rise_time is None:
-    #         rise_time = TIME_STEPS_VEC[i]
+    # Rise time
+    initial_error = error_i[i]
+    rise_start_threshold = 0.9 * initial_error
+    rise_end_threshold = 0.1 * initial_error
+    rise_time = None
+    for i, e in enumerate(error_i):
+        if abs(e) < abs(rise_start_threshold) and rise_time is None:
+            rise_time = TIME_STEPS_VEC[i]
 
-    # # Settling time (1%)
-    # settling_time = None
-    # threshold = 0.01 * abs(x_plot[-1][0, 0])
-    # for i in reversed(range(len(error0))):
-    #     if abs(error0[i]) > threshold:
-    #         settling_time = TIME_STEPS_VEC[i + 1] if i + 1 < len(TIME_STEPS_VEC) else TIME_STEPS_VEC[i]
-    #         break
+    # Settling time (1%)
+    settling_time = None
+    threshold = 0.01
+    for i in reversed(range(len(error_i))):
+        if abs(error_i[i]) > threshold:
+            if i + 1 < len(TIME_STEPS_VEC):
+                settling_time = TIME_STEPS_VEC[i + 1]
+            else:
+                settling_time = TIME_STEPS_VEC[i]
+            break
 
-    # # Steady-state error
-    # steady_state_error = error0[-1]
+    # Steady-state error
+    steady_state_error = abs(error_i[-1])
 
     # Print specs
     print("=== Estimation Performance ===")
     print(f"Overshoot: {overshoot_percent:.2f}%")
-    # print(f"Rise time (approx): {rise_time:.2f} s")
-    # print(f"Settling time (1%): {settling_time:.2f} s")
-    # print(f"Steady-state error: {steady_state_error:.4f}")
+    print(f"Rise time (approx): {rise_time:.2f} s")
+    print(f"Settling time (1%): {settling_time:.2f} s")
+    print(f"Steady-state error: {steady_state_error:.4f}")
 
 for idx, component in enumerate(["x", "y", "z"]):
     plt.figure()
