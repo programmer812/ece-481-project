@@ -1,7 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import math
-from scipy.signal import find_peaks
 
 T = 0.1
 SIMULATION_DURATION = 3
@@ -38,54 +37,45 @@ for t in TIME_STEPS_VEC:
     xvals.append(x)
     estimated_xvals.append(x_hat)
 
-error = [estimated_xvals[i] - xvals[i] for i in range(len(TIME_STEPS_VEC))]
-
-for i in range(3):
-    error_i = np.array([e[i, 0] for e in error])
-
-    # Overshoot
-    peaks, _ = find_peaks(error_i)
-    if len(peaks) > 0:
-        peak_values = error_i[peaks]
-        max_peak_relative_index = np.argmax(peak_values) # index in the peak_values array
-        max_peak_index = peaks[max_peak_relative_index] # index in the error_i array
-
-        max_peak = estimated_xvals[max_peak_index][i]
-
-        overshoot_percent = abs(max_peak[0]) * 100
-    else:
-        overshoot_percent = 0.0
-
-    # Rise time
-    initial_error = error_i[i]
-    rise_threshold = 0.9 * initial_error
-    rise_time = None
-    for i, e in enumerate(error_i):
-        if abs(e) < abs(rise_threshold) and rise_time is None:
-            rise_time = TIME_STEPS_VEC[i]
-
-    # Settling time (1%)
-    settling_time = None
-    threshold = 0.01
-    for i in reversed(range(len(error_i))):
-        if abs(error_i[i]) > threshold:
-            if i + 1 < len(TIME_STEPS_VEC):
-                settling_time = TIME_STEPS_VEC[i + 1]
-            else:
-                settling_time = TIME_STEPS_VEC[i]
-            break
-
-    # Steady-state error
-    steady_state_error = abs(error_i[-1])
-
-    # Print specs
-    print("=== Estimation Performance ===")
-    print(f"Overshoot: {overshoot_percent:.2f}%")
-    print(f"Rise time (approx): {rise_time:.2f} s")
-    print(f"Settling time (1%): {settling_time:.2f} s")
-    print(f"Steady-state error: {steady_state_error:.4f}")
-
 for idx, component in enumerate(["x", "y", "z"]):
+    print(f"Component {component}")
+
+    error = [
+        (estimated_xvals[i][idx] - xvals[i][idx])[0].item()
+        for i in range(len(TIME_STEPS_VEC))
+    ]
+
+    start_val = error[0]
+    start_val_sign = math.copysign(1, start_val)
+    step_size = abs(start_val)
+    print(f"Step size: {step_size}")
+
+    peak_idx = min(
+        list(range(len(TIME_STEPS_VEC))), key=lambda i: start_val_sign * error[i]
+    )
+    overshoot_amount = abs(error[peak_idx])
+    overshoot_percent = overshoot_amount / step_size * 100
+    print(f"Overshoot: {overshoot_percent}%")
+
+    low_threshold = 0.9 * step_size
+    passed_low_threshold = [abs(e) <= low_threshold for e in error]
+    low_idx = passed_low_threshold.index(True)
+
+    high_threshold = 0.1 * step_size
+    passed_high_threshold = [abs(e) <= high_threshold for e in error]
+    high_idx = passed_high_threshold.index(True)
+
+    rise_time = TIME_STEPS_VEC[high_idx] - TIME_STEPS_VEC[low_idx]
+    print(f"Rise Time: {rise_time}")
+
+    settling_threshold = 0.01 * step_size
+    passed_settling_threshold = [abs(e) <= settling_threshold for e in error]
+    settling_idx = len(passed_settling_threshold) - passed_settling_threshold[
+        ::-1
+    ].index(False)
+    settling_time = TIME_STEPS_VEC[settling_idx]
+    print(f"Settling Time: {settling_time}")
+
     plt.figure()
     plt.plot(
         TIME_STEPS_VEC,
@@ -97,9 +87,17 @@ for idx, component in enumerate(["x", "y", "z"]):
         [x[idx][0] for x in estimated_xvals],
         label="estimated state",
     )
+
+    # plt.axhline(y=error[peak_idx], linestyle=":", label="peak", color="green")
+    # plt.axhline(y=low_threshold, linestyle=":", label="10%", color="pink")
+    # plt.axhline(y=high_threshold, linestyle=":", label="90%", color="red")
+    # plt.axhline(y=settling_threshold, linestyle=":", label="1%", color="purple")
+    # plt.axhline(y=-settling_threshold, linestyle=":", label="1%", color="purple")
+
     plt.grid()
     plt.legend()
     plt.xlabel("Time (s)")
     plt.ylabel("State")
     plt.title(component)
+
     plt.show()
