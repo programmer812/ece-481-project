@@ -1,4 +1,3 @@
-import control as ct
 import numpy as np
 import matplotlib.pyplot as plt
 import math
@@ -22,8 +21,6 @@ B_d = np.array([[T**3 / 6], [T**2 / 2], [T]])
 C_d = np.array([[1, 0, 0]])
 
 eigvals = np.linalg.eigvals(A_d + L @ C_d)
-# print(f"Eigenvalues of A + LC: {eigvals}")
-# print(f"Eigenvalues are close: {np.isclose(desired_poles, eigvals, atol=0.0)}")
 
 # u = np.ones_like(TIME_STEPS_VEC) # unit step input
 
@@ -63,11 +60,10 @@ for i in range(3):
 
     # Rise time
     initial_error = error_i[i]
-    rise_start_threshold = 0.9 * initial_error
-    rise_end_threshold = 0.1 * initial_error
+    rise_threshold = 0.9 * initial_error
     rise_time = None
     for i, e in enumerate(error_i):
-        if abs(e) < abs(rise_start_threshold) and rise_time is None:
+        if abs(e) < abs(rise_threshold) and rise_time is None:
             rise_time = TIME_STEPS_VEC[i]
 
     # Settling time (1%)
