@@ -9,9 +9,9 @@ C_d = np.array([[1, 0, 0]])
 L = np.array([[-1.53803172], [-5.92698271], [-10.92812269]])
 F = np.array([[-67.17214498, -51.83430747, -12.47951264]])
 
-trajectory_time = 5
+trajectory_time = 20
 start_time = 1
-end_time = 20
+end_time = 5
 
 
 def generate_trajectory(current, target):
