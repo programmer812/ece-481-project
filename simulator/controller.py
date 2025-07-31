@@ -7,11 +7,11 @@ B_d = np.array([[(T**3) / 6], [(T**2) / 2], [T]])
 C_d = np.array([[1, 0, 0]])
 
 L = np.array([[-1.53803172], [-5.92698271], [-10.92812269]])
-F = np.array([[-67.17214498, -51.83430747, -12.47951264]])
+F = np.array([[-87.20516507, -59.06009656, -12.80743744]])
 
-trajectory_time = 20
+trajectory_time = 30
 start_time = 1
-end_time = 5
+end_time = 10
 
 
 def generate_trajectory(current, target):
