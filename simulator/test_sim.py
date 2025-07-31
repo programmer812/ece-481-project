@@ -3,14 +3,45 @@ from flapper_sim import FlapperSim
 from controller import Controller, generate_trajectory
 import time
 import json
+import random
 
 T = 0.1
 
-f = FlapperSim(robot_pose=np.array([1.0, 2.0, 0.8, 1.57]))
+
+def rand_pos():
+    padding = 0.1
+
+    x_min = -1
+    x_max = 2
+
+    y_min = -2
+    y_max = 2
+
+    z_min = 0.4
+    z_max = 1.5
+
+    x_range = x_max - x_min
+    y_range = y_max - y_min
+    z_range = z_max - z_min
+
+    return [
+        random.uniform(x_min + padding * x_range, x_max - padding * x_range),
+        random.uniform(y_min + padding * y_range, y_max - padding * y_range),
+        random.uniform(z_min + padding * z_range, z_max - padding * z_range),
+    ]
+
+
+start_pos = rand_pos()
+end_pos = rand_pos()
+
+print(f"start position: {start_pos}")
+print(f"end position: {end_pos}")
+
+f = FlapperSim(robot_pose=np.array(start_pos + [0]))
 c = Controller()
 
 y = f.get_output_measurement()
-target = np.array([2, -2, 0.4])
+target = np.array(end_pos)
 
 p_trajectory, v_trajectory, a_trajectory = generate_trajectory(y, target)
 
