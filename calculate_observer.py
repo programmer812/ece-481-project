@@ -37,7 +37,7 @@ for t in TIME_STEPS_VEC:
     xvals.append(x)
     estimated_xvals.append(x_hat)
 
-for idx, component in enumerate(["x", "y", "z"]):
+for idx, component in enumerate(["position", "velocity", "acceleration"]):
     print(f"Component {component}")
 
     error = [
