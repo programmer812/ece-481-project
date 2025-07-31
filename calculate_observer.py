@@ -22,8 +22,6 @@ C_d = np.array([[1, 0, 0]])
 
 eigvals = np.linalg.eigvals(A_d + L @ C_d)
 
-# u = np.ones_like(TIME_STEPS_VEC) # unit step input
-
 x = np.array([[0.0], [0.0], [0.0]])
 y = C_d @ x
 x_hat = np.array([[-1.0], [-1.0], [-1.0]])
